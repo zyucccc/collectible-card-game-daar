@@ -22,9 +22,14 @@ const useAffect = (
   }, dependencies)
 }
 
+//difinir Hook: useWallet
+//connecter le ethereum et init le contrat
 const useWallet = () => {
+  //detail de wallet et instance de contract
   const [details, setDetails] = useState<ethereum.Details>()
   const [contract, setContract] = useState<main.Main>()
+
+  //connecter le wallet et init le contract
   useAffect(async () => {
     const details_ = await ethereum.connect('metamask')
     if (!details_) return
@@ -33,6 +38,8 @@ const useWallet = () => {
     if (!contract_) return
     setContract(contract_)
   }, [])
+
+  //return
   return useMemo(() => {
     if (!details || !contract) return
     return { details, contract }
