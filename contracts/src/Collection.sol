@@ -29,6 +29,7 @@ contract Collection is ERC721,ERC721Enumerable,Ownable{
 
   //generer un card
   function mintCard(address recipient,uint256 collection_id,uint256 cardNumber,string memory ImgField) public onlyOwner returns (uint256){
+    require(counter_token_ids < cardCount, "Maximum number of cards reached");
     uint256 token_ids = counter_token_ids++;
     CollectionCards[token_ids] = CardMetaData(cardNumber,ImgField);
     //d'abord on met tous les collections le meme adresse que le Main contract
@@ -42,6 +43,14 @@ contract Collection is ERC721,ERC721Enumerable,Ownable{
     //check if the token_id exists dans la CollectionCards
     require(token_id <= counter_token_ids, "ERROR: Le token_id n'existe pas dans la CollectionCards");
     return CollectionCards[token_id];
+  }
+
+  function getAllCollectionCards() public view returns (CardMetaData[] memory) {
+    CardMetaData[] memory allCards = new CardMetaData[](counter_token_ids);
+    for (uint256 i = 0; i < counter_token_ids; i++) {
+        allCards[i] = CollectionCards[i];
+    }
+    return allCards;
   }
 
 //  override some functions

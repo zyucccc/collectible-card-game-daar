@@ -1,7 +1,9 @@
 import { ethers } from 'ethers'
 import * as ethereum from './ethereum'
 import { contracts } from '@/contracts.json'
+// @ts-ignore
 import type { Main } from '$/Main'
+// @ts-ignore
 export type { Main } from '$/Main'
 
 export const correctChain = () => {

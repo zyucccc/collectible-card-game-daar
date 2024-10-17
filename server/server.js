@@ -65,11 +65,22 @@ app.post('/mintCard', async (req, res) => {
   }
 });
 
-//get address of collection
+//get collection
 app.get('/getCollection/:collectionID', async (req, res) => {
   try {
     const collectionID = req.params.collectionID;
     const collectionAddress = await mainContract.getCollection(collectionID);
+    res.json({ success: true, collectionAddress });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+//get collection addresse
+app.get('/getCollectionAddress/:collectionID', async (req, res) => {
+  try {
+    const collectionID = req.params.collectionID;
+    const collectionAddress = await mainContract.getCollectionAddress(collectionID);
     res.json({ success: true, collectionAddress });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -81,6 +92,32 @@ app.get('/getCollectionCount', async (req, res) => {
   try {
     const count = await mainContract.getCollectionCount();
     res.json({ success: true, count: count.toString() });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+//get Collection Name
+app.get('/getCollectionName/:collectionID', async (req, res) => {
+  try {
+    const collectionID = req.params.collectionID;
+    const name = await mainContract.getCollectionName(collectionID);
+    res.json({ success: true, name });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+//get All cards of un collection
+app.get('/getAllCollectionCards/:collectionID', async (req, res) => {
+  try {
+    const { collectionID } = req.params;
+    const collectionAddress = await mainContract.getCollection(collectionID);
+    const collectionContract = new ethers.Contract(collectionAddress, CollectionABI, provider);
+    const cards = await collectionContract.getAllCollectionCards();
+    //convertir uint256 en string
+    const processedCards = bigIntToString(cards);
+    res.json({ success: true, cards: processedCards });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -98,6 +135,32 @@ app.get('/getCollectionCards/:collectionID/:tokenId', async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+
+//fonction auxiliaire
+function processCardMetaData(cardData) {
+  if (Array.isArray(cardData) && cardData.length === 2) {
+    return {
+      cardNumber: bigIntToString(cardData[0]),
+      ImgField: cardData[1]
+    };
+  }
+  return cardData;
+}
+
+//BigInt to String
+function bigIntToString(obj) {
+  if (typeof obj === 'bigint') {
+    return obj.toString();
+  } else if (Array.isArray(obj)) {
+    return obj.map(processCardMetaData);
+  } else if (typeof obj === 'object' && obj !== null) {
+    return Object.fromEntries(
+      Object.entries(obj).map(([key, value]) => [key, bigIntToString(value)])
+    );
+  }
+  return obj;
+}
+
 
 
 app.listen(port, () => {

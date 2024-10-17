@@ -34,12 +34,33 @@ contract Main is Ownable {
     emit CardMinted(collectionID, unique_id,recipient, cardNumber, ImgField);
   }
 
-  function getCollection(uint256 collectionID) public returns (Collection) {
+  function getCollection(uint256 collectionID) public view returns (Collection) {
+    require(collectionID < count, "ERROR: Collection does not exist");
     return collections[collectionID];
+  }
+
+  function getCollectionAddress(uint256 collectionID) public view returns (address) {
+    require(collectionID < count, "ERROR: Collection does not exist");
+    return address(collections[collectionID]);
   }
 
   function getCollectionCount() public view returns (uint256) {
     return count;
+  }
+
+  function getCollectionCards(uint256 collectionID, uint256 token_id) public view returns (Collection.CardMetaData memory) {
+    require(collectionID < count, "ERROR: Collection does not exist");
+    return collections[collectionID].getCollectionCards(token_id);
+  }
+
+  function getAllCollectionCards(uint256 collectionID) public view returns (Collection.CardMetaData[] memory) {
+    require(collectionID < count, "ERROR: Collection does not exist");
+    return collections[collectionID].getAllCollectionCards();
+  }
+
+  function getCollectionName(uint256 collectionID) public view returns (string memory) {
+    require(collectionID < count, "ERROR: Collection does not exist");
+    return collections[collectionID].collectionName();
   }
 
 }
