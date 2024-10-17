@@ -3,6 +3,12 @@ import styles from './styles.module.css'
 import * as ethereum from '@/lib/ethereum'
 import * as main from '@/lib/main'
 
+type NFT = {
+  cardNumber: number;
+  ImgField: string;
+};
+
+
 type Canceler = () => void
 const useAffect = (
   asyncEffect: () => Promise<Canceler | void>,
@@ -48,6 +54,7 @@ const useWallet = () => {
 
 export const App = () => {
   const wallet = useWallet()
+  const [nfts, setNfts] = useState<NFT[]>([])
   return (
     <div className={styles.body}>
       <h1>Welcome to Pokémon TCG</h1>

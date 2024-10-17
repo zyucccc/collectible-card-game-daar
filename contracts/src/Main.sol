@@ -11,9 +11,12 @@ contract Main is Ownable {
   event CollectionCreated(uint256 count, string name, uint256 cardCount);
   event CardMinted(uint256 collectionID, uint256 unique_id, address recipient, uint256 cardNumber, string ImgField);
 
-  constructor(address owner) Ownable(owner) {
-    count = 0;
-  }
+// Account #0: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 (10000 ETH)
+// Private Key: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+
+    constructor() Ownable(0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266) {
+        count = 0;
+    }
 
   function createCollection(string calldata name, uint256 cardCount) external onlyOwner{
     address user =  address (this);

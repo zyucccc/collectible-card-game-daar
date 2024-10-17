@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 
-contract Collection is ERC721,Ownable{
+contract Collection is ERC721,ERC721Enumerable,Ownable{
 
   string public collectionName;
   uint256 public cardCount;
@@ -44,5 +44,20 @@ contract Collection is ERC721,Ownable{
     return CollectionCards[token_id];
   }
 
+//  override some functions
+    //mise a jour le owner de card
+    function _update(address to, uint256 tokenId, address auth) internal override(ERC721, ERC721Enumerable) returns (address){
+        return super._update(to, tokenId, auth);
+    }
+
+    //ajouter un balance
+    function _increaseBalance(address account, uint128 amount) internal override(ERC721, ERC721Enumerable) {
+        super._increaseBalance(account, amount);
+    }
+
+    //check si contrat supporte l'interface
+    function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721Enumerable) returns (bool){
+        return super.supportsInterface(interfaceId);
+    }
 
 }
