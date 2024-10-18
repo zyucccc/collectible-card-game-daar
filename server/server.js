@@ -136,7 +136,35 @@ app.get('/getCollectionCards/:collectionID/:tokenId', async (req, res) => {
   }
 });
 
+// getUserCollection API
+app.get('/getUserCollection/:userAddress', async (req, res) => {
+  try {
+    const userAddress = req.params.userAddress;
+    const collectionInfo = await mainContract.getUserCollection(userAddress);
+
+    // process the collection info
+    const processedCollectionInfo = {
+      id: collectionInfo.id.toString(),
+      name: collectionInfo.name,
+      cardCount: collectionInfo.cardCount.toString(),
+      cards: collectionInfo.cards.map(card => ({
+        cardNumber: card.cardNumber.toString(),
+        ImgField: card.ImgField
+      }))
+    };
+
+    res.json({ success: true, collectionInfo: processedCollectionInfo });
+  } catch (error) {
+    if (error.message.includes("No collection found for this user")) {
+      res.status(404).json({ success: false, error: "can't find the collection of this user" });
+    } else {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  }
+});
+
 //fonction auxiliaire
+
 function processCardMetaData(cardData) {
   if (Array.isArray(cardData) && cardData.length === 2) {
     return {

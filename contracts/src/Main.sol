@@ -11,6 +11,12 @@ contract Main is Ownable {
   event CollectionCreated(uint256 count, string name, uint256 cardCount);
   event CardMinted(uint256 collectionID, uint256 unique_id, address recipient, uint256 cardNumber, string ImgField);
 
+    struct CollectionInfo {
+        uint256 id;
+        string name;
+        uint256 cardCount;
+        Collection.CardMetaData[] cards;
+    }
 // Account #0: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 (10000 ETH)
 // Private Key: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 
@@ -63,4 +69,23 @@ contract Main is Ownable {
     return collections[collectionID].collectionName();
   }
 
+
+    function getUserCollection(address user) public view returns (CollectionInfo memory) {
+        for (uint256 i = 0; i < count; i++) {
+            if (address(collections[i]) == user) {
+                Collection collection = collections[i];
+                string memory name = collection.collectionName();
+                uint256 cardCount = collection.cardCount();
+                Collection.CardMetaData[] memory cards = collection.getAllCollectionCards();
+
+                return CollectionInfo({
+                    id: i,
+                    name: name,
+                    cardCount: cardCount,
+                    cards: cards
+                });
+            }
+        }
+        revert("No collection found for this user");
+    }
 }

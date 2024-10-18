@@ -13,6 +13,7 @@
     "concurrently": "^7.5.0"
   },
   "dependencies": {
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "react-router-dom": "^6.27.0"
   }
 }
