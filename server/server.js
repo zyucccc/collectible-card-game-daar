@@ -27,7 +27,7 @@ const MAIN_CONTRACT_ADDRESS = process.env.MAIN_CONTRACT_ADDRESS;
 const provider = new ethers.JsonRpcProvider(MAINNET_RPC_URL);
 const signer = new ethers.Wallet(PRIVATE_KEY, provider);
 
-//creer un contract Main
+//creer un contract Main par le compte[0] private key: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 const mainContract = new ethers.Contract(MAIN_CONTRACT_ADDRESS, MainABI, signer);
 
 //test
@@ -44,8 +44,8 @@ app.get('/test', (req, res) => {
 //creer un contract Collection
 app.post('/createCollection', async (req, res) => {
   try {
-    const { name, cardCount } = req.body;
-    const tx = await mainContract.createCollection(name, cardCount);
+    const { user, name, cardCount } = req.body;
+    const tx = await mainContract.createCollection(user, name, cardCount);
     await tx.wait();
     res.json({ success: true, message: "Collection created successfully" });
   } catch (error) {
@@ -77,15 +77,15 @@ app.get('/getCollection/:collectionID', async (req, res) => {
 });
 
 //get collection addresse
-app.get('/getCollectionAddress/:collectionID', async (req, res) => {
-  try {
-    const collectionID = req.params.collectionID;
-    const collectionAddress = await mainContract.getCollectionAddress(collectionID);
-    res.json({ success: true, collectionAddress });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
+// app.get('/getCollectionAddress/:collectionID', async (req, res) => {
+//   try {
+//     const collectionID = req.params.collectionID;
+//     const collectionAddress = await mainContract.getCollectionAddress(collectionID);
+//     res.json({ success: true, collectionAddress });
+//   } catch (error) {
+//     res.status(500).json({ success: false, error: error.message });
+//   }
+// });
 
 //get collection count
 app.get('/getCollectionCount', async (req, res) => {
@@ -136,14 +136,25 @@ app.get('/getCollectionCards/:collectionID/:tokenId', async (req, res) => {
   }
 });
 
+//get Collection Owner
+app.get('/getCollectionOwner/:collectionID', async (req, res) => {
+  try {
+    const collectionID = req.params.collectionID;
+    const owner = await mainContract.getCollectionOwner(collectionID);
+    res.json({ success: true, owner });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // getUserCollection API
 app.get('/getUserCollection/:userAddress', async (req, res) => {
   try {
     const userAddress = req.params.userAddress;
-    const collectionInfo = await mainContract.getUserCollection(userAddress);
+    const collectionsInfo = await mainContract.getUserCollection(userAddress);
 
-    // process the collection info
-    const processedCollectionInfo = {
+    // process the collections info
+    const processedCollectionsInfo = collectionsInfo.map(collectionInfo => ({
       id: collectionInfo.id.toString(),
       name: collectionInfo.name,
       cardCount: collectionInfo.cardCount.toString(),
@@ -151,15 +162,12 @@ app.get('/getUserCollection/:userAddress', async (req, res) => {
         cardNumber: card.cardNumber.toString(),
         ImgField: card.ImgField
       }))
-    };
+    }));
 
-    res.json({ success: true, collectionInfo: processedCollectionInfo });
+    res.json({ success: true, collectionsInfo: processedCollectionsInfo });
   } catch (error) {
-    if (error.message.includes("No collection found for this user")) {
-      res.status(404).json({ success: false, error: "can't find the collection of this user" });
-    } else {
-      res.status(500).json({ success: false, error: error.message });
-    }
+    console.error('Error fetching user collections:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch collections' });
   }
 });
 

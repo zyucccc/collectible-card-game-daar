@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
+import "hardhat/console.sol";
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -28,7 +29,7 @@ contract Collection is ERC721,ERC721Enumerable,Ownable{
   }
 
   //generer un card
-  function mintCard(address recipient,uint256 collection_id,uint256 cardNumber,string memory ImgField) public onlyOwner returns (uint256){
+  function mintCard(address recipient,uint256 collection_id,uint256 cardNumber,string memory ImgField) public returns (uint256){
     require(counter_token_ids < cardCount, "Maximum number of cards reached");
     uint256 token_ids = counter_token_ids++;
     CollectionCards[token_ids] = CardMetaData(cardNumber,ImgField);
@@ -77,6 +78,5 @@ contract Collection is ERC721,ERC721Enumerable,Ownable{
     function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721Enumerable) returns (bool){
         return super.supportsInterface(interfaceId);
     }
-
 
 }

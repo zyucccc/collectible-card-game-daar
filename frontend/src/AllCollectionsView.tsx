@@ -15,6 +15,7 @@ interface Collection {
   id: number;
   name: string;
   cards: CardMetaData[];
+  owner: string;
 }
 
 type Canceler = () => void
@@ -81,14 +82,16 @@ export const AllCollectionsView: React.FC = () => {
       // pour les single cards de chaque collection
       for (let i = 0; i < count; i++) {
         const cardsResponse = await axios.get(`${API_BASE_URL}/getAllCollectionCards/${i}`);
-        const addressResponse = await axios.get(`${API_BASE_URL}/getCollectionAddress/${i}`);
+        const addressResponse = await axios.get(`${API_BASE_URL}/getCollection/${i}`);
         const collectionName = await axios.get(`${API_BASE_URL}/getCollectionName/${i}`);
+        const collectionOwner = await axios.get(`${API_BASE_URL}/getCollectionOwner/${i}`);
 
         collectionsData.push({
           id: i,
           // name: `Collection : ${i}`,
           name: `CollectionName : ` + collectionName.data.name,
-          cards: cardsResponse.data.cards
+          cards: cardsResponse.data.cards,
+          owner: `Owner adresse: ` + collectionOwner.data.owner,
         });
       }
       //mise a jour de collections
@@ -119,6 +122,7 @@ export const AllCollectionsView: React.FC = () => {
       {collections.map((collection) => (
         <div key={collection.id}>
           <h2>{collection.name}</h2>
+          <h3>{collection.owner}</h3>
           <div style={{ display: 'flex', flexWrap: 'wrap' }}>
             {collection.cards.map((card, index) => (
               <div key={index} style={{ margin: '10px', textAlign: 'center' }}>

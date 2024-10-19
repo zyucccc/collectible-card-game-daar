@@ -1,14 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
-
+import "hardhat/console.sol";
 import "./Collection.sol";
 
 contract Main is Ownable {
   uint256 private count;
   mapping(uint256 => Collection) private collections;
+  mapping(address => uint256[]) private mapping_userCollections;
 
   //on set events ici pour communiquer avec le front end
-  event CollectionCreated(uint256 count, string name, uint256 cardCount);
+  event CollectionCreated(address user,uint256 count, string name, uint256 cardCount);
   event CardMinted(uint256 collectionID, uint256 unique_id, address recipient, uint256 cardNumber, string ImgField);
 
     struct CollectionInfo {
@@ -24,13 +25,15 @@ contract Main is Ownable {
         count = 0;
     }
 
-  function createCollection(string calldata name, uint256 cardCount) external onlyOwner{
-    address user =  address (this);
+  function createCollection(address user,string calldata name, uint256 cardCount) external onlyOwner{
+//    address user =  address (this);
     Collection newCollection = new Collection(user,name, cardCount);
-    collections[count++] = newCollection;
+    collections[count] = newCollection;
+    mapping_userCollections[user].push(count);
 
     //emit un event? a voir
-    emit CollectionCreated(count, name, cardCount);
+    emit CollectionCreated(user,count, name, cardCount);
+    count++;
   }
 
   function mintCard(uint256 collectionID, address recipient, uint256 cardNumber, string calldata ImgField) external onlyOwner {
@@ -45,9 +48,9 @@ contract Main is Ownable {
     return collections[collectionID];
   }
 
-  function getCollectionAddress(uint256 collectionID) public view returns (address) {
+  function getCollectionOwner(uint256 collectionID) public view returns (address) {
     require(collectionID < count, "ERROR: Collection does not exist");
-    return address(collections[collectionID]);
+    return collections[collectionID].owner();
   }
 
   function getCollectionCount() public view returns (uint256) {
@@ -69,23 +72,47 @@ contract Main is Ownable {
     return collections[collectionID].collectionName();
   }
 
-
-    function getUserCollection(address user) public view returns (CollectionInfo memory) {
-        for (uint256 i = 0; i < count; i++) {
-            if (address(collections[i]) == user) {
-                Collection collection = collections[i];
-                string memory name = collection.collectionName();
-                uint256 cardCount = collection.cardCount();
-                Collection.CardMetaData[] memory cards = collection.getAllCollectionCards();
-
-                return CollectionInfo({
-                    id: i,
-                    name: name,
-                    cardCount: cardCount,
-                    cards: cards
-                });
-            }
+    function getUserCollection(address user) public view returns (CollectionInfo[] memory) {
+        uint256[] memory userCollectionIds = mapping_userCollections[user];
+//        console.log("Getting collections for user:", user);
+//        console.log("test");
+        CollectionInfo[] memory infos = new CollectionInfo[](userCollectionIds.length);
+//        console.log("infos create");
+        for (uint256 i = 0; i < userCollectionIds.length; i++) {
+            console.log("copying : ",i);
+            uint256 collectionId = userCollectionIds[i];
+            Collection collection = collections[collectionId];
+            // Fill in CollectionInfo...
+            infos[i] = CollectionInfo({
+                id: collectionId,
+                name: collection.collectionName(),
+                cardCount: collection.cardCount(),
+                cards: collection.getAllCollectionCards()
+            });
+//            console.log("copy terminate: ",i);
         }
-        revert("No collection found for this user");
+//        console.log("Bien pass!");
+
+        return infos;
     }
+
 }
+
+//    function getUserCollections(address user) public view returns (CollectionInfo memory) {
+//        for (uint256 i = 0; i < count; i++) {
+//            if (collections[i].owner() == user) {
+//                Collection collection = collections[i];
+//                string memory name = collection.collectionName();
+//                uint256 cardCount = collection.cardCount();
+//                Collection.CardMetaData[] memory cards = collection.getAllCollectionCards();
+//
+//                return CollectionInfo({
+//                    id: i,
+//                    name: name,
+//                    cardCount: cardCount,
+//                    cards: cards
+//                });
+//            }
+//        }
+//        revert("No collection found for this user");
+//    }
