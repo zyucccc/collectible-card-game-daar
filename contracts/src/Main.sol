@@ -98,22 +98,3 @@ contract Main is Ownable {
     }
 
 }
-
-//    function getUserCollections(address user) public view returns (CollectionInfo memory) {
-//        for (uint256 i = 0; i < count; i++) {
-//            if (collections[i].owner() == user) {
-//                Collection collection = collections[i];
-//                string memory name = collection.collectionName();
-//                uint256 cardCount = collection.cardCount();
-//                Collection.CardMetaData[] memory cards = collection.getAllCollectionCards();
-//
-//                return CollectionInfo({
-//                    id: i,
-//                    name: name,
-//                    cardCount: cardCount,
-//                    cards: cards
-//                });
-//            }
-//        }
-//        revert("No collection found for this user");
-//    }

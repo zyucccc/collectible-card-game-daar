@@ -1,7 +1,7 @@
 const { getTest,createCollection,mintCard,getCollection,getCollectionCount,getCollectionName,getAllCollectionCards,getCardInfo,getCollectionOwner,getUserCollection } = require('./api_contract/api_contract');
 const {getSetCardCount,getPokemonSetByID,getPokemonSetCards,getPokemonNameByID} = require('./pokemon/PokemonSetApi');
 const {getPokemonCardByID} = require('./pokemon/PokemonCardApi');
-const {initCollection} = require('./init_script/init_script');
+const {initCollection,insererSetPokman_dans_collection} = require('./init_script/api_pokemon_contract_script');
 
 const express = require('express');
 
@@ -16,7 +16,21 @@ app.use(express.json());
 //-----------------------Init--------------------------//
 /////////////////////////////////////////////////////////
 
-initCollection();
+async function init(){
+  try {
+    await initCollection();
+    await insererSetPokman_dans_collection("swsh1", "0x70997970C51812dc3A010C7d01b50e0d17dc79C8");
+  }
+  catch(error){
+    console.error('Error init:', error);
+  }
+  }
+init();
+//init une collection avec le set de pokemon quand on demarre le serveur
+// initCollection();
+
+//inserer un set de pokemon dans une collection
+// insererSetPokman_dans_collection("swsh1","0x70997970C51812dc3A010C7d01b50e0d17dc79C8");
 
 /////////////////////////////////////////////////////////
 //----------------------Pokemon------------------------//
