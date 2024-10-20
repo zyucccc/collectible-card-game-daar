@@ -12,13 +12,17 @@ const port = 6854;
 app.use(cors());
 app.use(express.json());
 
+
 /////////////////////////////////////////////////////////
 //-----------------------Init--------------------------//
 /////////////////////////////////////////////////////////
 
 async function init(){
   try {
+    //init une collection avec le set de pokemon quand on demarre le serveur
     await initCollection();
+
+    //inserer un set de pokemon dans une collection
     await insererSetPokman_dans_collection("swsh1", "0x70997970C51812dc3A010C7d01b50e0d17dc79C8");
   }
   catch(error){
@@ -26,11 +30,6 @@ async function init(){
   }
   }
 init();
-//init une collection avec le set de pokemon quand on demarre le serveur
-// initCollection();
-
-//inserer un set de pokemon dans une collection
-// insererSetPokman_dans_collection("swsh1","0x70997970C51812dc3A010C7d01b50e0d17dc79C8");
 
 /////////////////////////////////////////////////////////
 //----------------------Pokemon------------------------//
@@ -87,7 +86,6 @@ app.get('/getCollectionOwner/:collectionID', getCollectionOwner);
 
 // getUserCollection API
 app.get('/getUserCollection/:userAddress', getUserCollection);
-
 
 app.listen(port, () => {
   console.log(`NFT Metadata API listening at http://localhost:${port}`);

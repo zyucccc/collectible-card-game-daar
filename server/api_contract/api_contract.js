@@ -145,7 +145,7 @@ const getUserCollection = async (req, res) => {
       name: collectionInfo.name,
       cardCount: collectionInfo.cardCount.toString(),
       cards: collectionInfo.cards.map(card => ({
-        cardNumber: card.cardNumber.toString(),
+        cardNumber: card.cardId.toString(),
         ImgField: card.ImgField
       }))
     }));
