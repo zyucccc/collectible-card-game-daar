@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
-import { AllCollectionsView } from './AllCollectionsView';
-import { UserCollectionView } from './UserCollectionView';
-import { HomePage } from './HomePage';
+import { AllCollectionsView } from './view/AllCollectionsView';
+import { UserCollectionView } from './view/UserCollectionView';
+import { HomePage } from './view/HomePage';
 
 export const App: React.FC = () => {
   return (

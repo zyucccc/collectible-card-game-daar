@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import styles from './styles.module.css'
+import styles from '../styles.module.css'
 import * as ethereum from '@/lib/ethereum'
 import * as main from '@/lib/main'
 import axios from 'axios';
@@ -91,7 +91,7 @@ export const AllCollectionsView: React.FC = () => {
           // name: `Collection : ${i}`,
           name: `CollectionName : ` + collectionName.data.name,
           cards: cardsResponse.data.cards,
-          owner: `Owner adresse: ` + collectionOwner.data.owner,
+          owner: `Owner: Wallet adresse: ` + collectionOwner.data.owner,
         });
       }
       //mise a jour de collections

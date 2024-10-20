@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
-import "hardhat/console.sol";
+//import "hardhat/console.sol";
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 
-contract Collection is ERC721,ERC721Enumerable,Ownable{
+contract Collection is ERC721,ERC721Enumerable,ERC721URIStorage,Ownable{
 
   string public collectionName;
   uint256 public cardCount;
@@ -36,7 +36,8 @@ contract Collection is ERC721,ERC721Enumerable,Ownable{
     //d'abord on met tous les collections le meme adresse que le Main contract
     //alors pour eviter les conflits de token_id on fait une formule avec le facteur collection_id pour generer un unique_id
     uint256 unique_id = collection_id * 1e6 + token_ids;
-    _mint(recipient, token_ids);
+    _mint(recipient, unique_id);
+//    console.log("Card minted with unique_id: %d", unique_id);
     return unique_id;
   }
 
@@ -75,8 +76,12 @@ contract Collection is ERC721,ERC721Enumerable,Ownable{
     }
 
     //check si contrat supporte l'interface
-    function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721Enumerable) returns (bool){
+    function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721Enumerable, ERC721URIStorage) returns (bool){
         return super.supportsInterface(interfaceId);
     }
 
+    function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory)
+    {
+        return super.tokenURI(tokenId);
+    }
 }

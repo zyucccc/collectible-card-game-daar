@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
-import "hardhat/console.sol";
+//import "hardhat/console.sol";
 import "./Collection.sol";
 
 contract Main is Ownable {
@@ -36,11 +36,12 @@ contract Main is Ownable {
     count++;
   }
 
-  function mintCard(uint256 collectionID, address recipient, uint256 cardNumber, string calldata ImgField) external onlyOwner {
+  function mintCard(uint256 collectionID, address recipient, uint256 cardNumber, string calldata ImgField) external onlyOwner returns (uint256) {
     require(collectionID <= count, "ERROR: Collection does not exist");
     uint256 unique_id = collections[collectionID].mintCard(recipient, collectionID,cardNumber, ImgField);
     //pour tracker les cards minted
     emit CardMinted(collectionID, unique_id,recipient, cardNumber, ImgField);
+    return unique_id;
   }
 
   function getCollection(uint256 collectionID) public view returns (Collection) {
@@ -79,7 +80,7 @@ contract Main is Ownable {
         CollectionInfo[] memory infos = new CollectionInfo[](userCollectionIds.length);
 //        console.log("infos create");
         for (uint256 i = 0; i < userCollectionIds.length; i++) {
-            console.log("copying : ",i);
+//            console.log("copying : ",i);
             uint256 collectionId = userCollectionIds[i];
             Collection collection = collections[collectionId];
             // Fill in CollectionInfo...
