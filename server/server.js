@@ -1,7 +1,7 @@
-const { getTest,createCollection,mintCard,getCollection,getCollectionCount,getCollectionName,getAllCollectionCards,getCardInfo,getCollectionOwner,getUserCollection } = require('./api_contract/api_contract');
+const { getTest,createCollection,mintCard,getCollection,getCollectionCount,getCollectionName,getAllCollectionCards,getCardInfo,getCollectionOwner,getUserCollection,getCollectionID } = require('./api_contract/api_contract');
 const {getSetCardCount,getPokemonSetByID,getPokemonSetCards,getPokemonNameByID} = require('./pokemon/PokemonSetApi');
 const {getPokemonCardByID} = require('./pokemon/PokemonCardApi');
-const {initCollection,insererSetPokman_dans_collection} = require('./init_script/api_pokemon_contract_script');
+const {initCollection,insererSetPokman_dans_collection,add_card_to_UserCollection} = require('./init_script/api_pokemon_contract_script');
 
 const express = require('express');
 
@@ -29,7 +29,7 @@ async function init(){
     console.error('Error init:', error);
   }
   }
-init();
+// init();
 
 /////////////////////////////////////////////////////////
 //----------------------Pokemon------------------------//
@@ -86,6 +86,12 @@ app.get('/getCollectionOwner/:collectionID', getCollectionOwner);
 
 // getUserCollection API
 app.get('/getUserCollection/:userAddress', getUserCollection);
+
+//get Collection ID
+app.get('/getCollectionID/:userAddress', getCollectionID);
+
+//add a card into collection
+app.post('/addCardToCollection', add_card_to_UserCollection);
 
 app.listen(port, () => {
   console.log(`NFT Metadata API listening at http://localhost:${port}`);

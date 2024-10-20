@@ -56,14 +56,14 @@ contract Collection is ERC721,ERC721Enumerable,Ownable{
     return allCards;
   }
 
-  function getCardsByOwner(address owner) public view returns (uint256[] memory) {
-    uint256 balance = balanceOf(owner);
-    uint256[] memory result = new uint256[](balance);
-    for (uint256 i = 0; i < balance; i++) {
-        result[i] = tokenOfOwnerByIndex(owner, i);
-    }
-    return result;
-  }
+//  function getCardsByOwner(address owner) public view returns (uint256[] memory) {
+//    uint256 balance = balanceOf(owner);
+//    uint256[] memory result = new uint256[](balance);
+//    for (uint256 i = 0; i < balance; i++) {
+//        result[i] = tokenOfOwnerByIndex(owner, i);
+//    }
+//    return result;
+//  }
 
 //  override some functions
     //mise a jour le owner de card

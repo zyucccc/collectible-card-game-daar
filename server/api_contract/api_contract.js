@@ -157,6 +157,24 @@ const getUserCollection = async (req, res) => {
   }
 }
 
+//get CollectionID par userAddress
+const getCollectionID = async (req, res) => {
+  try {
+    const userAddress = req.params.userAddress;
+    const collectionsIDs = await mainContract.getCollectionsID(userAddress);
+
+    const formattedCollectionIDs = collectionsIDs.map(bigIntToString);
+
+    res.json({
+      success: true,
+      collectionIDs: formattedCollectionIDs
+    });
+  } catch (error) {
+    console.error('Error fetching user collections:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch collections' });
+  }
+};
+
 //fonction auxiliaire
 
 function processCardMetaData(cardData) {
@@ -195,4 +213,5 @@ module.exports =
   , getCardInfo
   , getCollectionOwner
   , getUserCollection
+  , getCollectionID
 }

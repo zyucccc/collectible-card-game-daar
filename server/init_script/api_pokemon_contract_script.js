@@ -44,7 +44,7 @@ const initCollection = async () => {
       User = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'; // compte[0] de test hardhat
        //creer un instance Collection
        tx = await mainContract.createCollection(User, CollectionName, CollectionCount);
-       // await tx.wait();
+       await tx.wait();
 
       // for (let i = 0; i < 5; i++) {
       //   const card = cards[i];
@@ -92,7 +92,7 @@ const insererSetPokman_dans_collection = async(pokmonSetID,userAdresse) => {
 
         //creer un instance Collection
         tx = await mainContract.createCollection(userAdresse, CollectionName, CollectionCount);
-        // await tx.wait();
+        await tx.wait();
 
         count = await mainContract.getCollectionCount();
         // console.log("countRes: ", countRes, typeof countRes);
@@ -125,7 +125,56 @@ const insererSetPokman_dans_collection = async(pokmonSetID,userAdresse) => {
     }
 }
 
+const add_card_to_UserCollection = async (req, res) => {
+  try {
+    const { userAdresse, cardID, index = 0 } = req.body;
+    console.log("userAdresse: ", userAdresse, typeof userAdresse);
+    console.log("cardID: ", cardID, typeof cardID);
+    console.log("index: ", index, typeof index);
+
+    // Fetch collection IDs
+    const collectionIdsRes = await axios.get(`${API_BASE_URL}/getCollectionID/${userAdresse}`);
+    if (!collectionIdsRes.data || !collectionIdsRes.data.collectionIDs) {
+      return res.status(404).json({ success: false, message: 'No collections found for this user' });
+    }
+    const index_bignumber = BigInt(index);
+    const collectionId = collectionIdsRes.data.collectionIDs[index];
+    console.log("collectionId: ", collectionId, typeof collectionId);
+
+    // Fetch card details
+    const cardRes = await axios.get(`https://api.pokemontcg.io/v2/cards/${cardID}`);
+    console.log("cardRes: ", cardRes.data, typeof cardRes.data);
+    if (!cardRes.data || !cardRes.data.images || !cardRes.data.images.small) {
+      return res.status(404).json({ success: false, message: 'Card not found or missing image' });
+    }
+    const cardImg = cardRes.data.data.images.small;
+    console.log("cardImg: ", cardImg, typeof cardImg);
+
+    // Mint the card
+    const tx = await mainContract.mintCard(collectionId, userAdresse, cardID, cardImg);
+    await tx.wait();
+
+    // Send success response
+    res.json({ success: true, message: 'Card minted successfully' });
+  } catch (error) {
+    console.error('Error in add_card_to_UserCollection:', error);
+    res.status(500).json({ success: false, message: 'Error minting card', error: error.message });
+  }
+};
+
+//booster
+// "id": "swsh3-1"
+// "id": "swsh3-2"
+// "id": "swsh3-3"
+// "id": "swsh3-4"
+// "id": "swsh3-5"
+// const
+
+
+
+
 module.exports = {
     initCollection,
-    insererSetPokman_dans_collection
+    insererSetPokman_dans_collection,
+    add_card_to_UserCollection
 }

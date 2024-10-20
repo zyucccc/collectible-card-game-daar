@@ -49,6 +49,10 @@ contract Main is Ownable {
     return collections[collectionID];
   }
 
+  function getCollectionsID(address user) public view returns (uint256[] memory) {
+    return mapping_userCollections[user];
+  }
+
   function getCollectionOwner(uint256 collectionID) public view returns (address) {
     require(collectionID < count, "ERROR: Collection does not exist");
     return collections[collectionID].owner();
