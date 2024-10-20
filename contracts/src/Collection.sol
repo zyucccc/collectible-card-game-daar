@@ -5,10 +5,10 @@ pragma solidity ^0.8;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+//import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 
-contract Collection is ERC721,ERC721Enumerable,ERC721URIStorage,Ownable{
+contract Collection is ERC721,ERC721Enumerable,Ownable{
 
   string public collectionName;
   uint256 public cardCount;
@@ -17,7 +17,8 @@ contract Collection is ERC721,ERC721Enumerable,ERC721URIStorage,Ownable{
   uint256 private counter_token_ids = 0;
 
   struct CardMetaData{
-    uint256 cardNumber;
+//    uint256 cardNumber;
+    string cardId;
     string ImgField;
   }
 
@@ -29,7 +30,7 @@ contract Collection is ERC721,ERC721Enumerable,ERC721URIStorage,Ownable{
   }
 
   //generer un card
-  function mintCard(address recipient,uint256 collection_id,uint256 cardNumber,string memory ImgField) public returns (uint256){
+  function mintCard(address recipient,uint256 collection_id,string memory cardNumber,string memory ImgField) public returns (uint256){
     require(counter_token_ids < cardCount, "Maximum number of cards reached");
     uint256 token_ids = counter_token_ids++;
     CollectionCards[token_ids] = CardMetaData(cardNumber,ImgField);
@@ -76,11 +77,11 @@ contract Collection is ERC721,ERC721Enumerable,ERC721URIStorage,Ownable{
     }
 
     //check si contrat supporte l'interface
-    function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721Enumerable, ERC721URIStorage) returns (bool){
+    function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721Enumerable) returns (bool){
         return super.supportsInterface(interfaceId);
     }
 
-    function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory)
+    function tokenURI(uint256 tokenId) public view override(ERC721) returns (string memory)
     {
         return super.tokenURI(tokenId);
     }

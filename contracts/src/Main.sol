@@ -10,7 +10,7 @@ contract Main is Ownable {
 
   //on set events ici pour communiquer avec le front end
   event CollectionCreated(address user,uint256 count, string name, uint256 cardCount);
-  event CardMinted(uint256 collectionID, uint256 unique_id, address recipient, uint256 cardNumber, string ImgField);
+  event CardMinted(uint256 collectionID, uint256 unique_id, address recipient, string cardNumber, string ImgField);
 
     struct CollectionInfo {
         uint256 id;
@@ -36,7 +36,7 @@ contract Main is Ownable {
     count++;
   }
 
-  function mintCard(uint256 collectionID, address recipient, uint256 cardNumber, string calldata ImgField) external onlyOwner returns (uint256) {
+  function mintCard(uint256 collectionID, address recipient, string memory cardNumber, string calldata ImgField) external onlyOwner returns (uint256) {
     require(collectionID <= count, "ERROR: Collection does not exist");
     uint256 unique_id = collections[collectionID].mintCard(recipient, collectionID,cardNumber, ImgField);
     //pour tracker les cards minted
