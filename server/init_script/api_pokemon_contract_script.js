@@ -143,16 +143,15 @@ const add_card_to_UserCollection = async (req, res) => {
 
     // Fetch card details
     const cardRes = await axios.get(`https://api.pokemontcg.io/v2/cards/${cardID}`);
-    console.log("cardRes: ", cardRes.data, typeof cardRes.data);
-    if (!cardRes.data || !cardRes.data.images || !cardRes.data.images.small) {
-      return res.status(404).json({ success: false, message: 'Card not found or missing image' });
-    }
+    // console.log("cardRes: ", cardRes.data, typeof cardRes.data);
+
     const cardImg = cardRes.data.data.images.small;
     console.log("cardImg: ", cardImg, typeof cardImg);
 
     // Mint the card
     const tx = await mainContract.mintCard(collectionId, userAdresse, cardID, cardImg);
     await tx.wait();
+    console.log(`Card ${cardID} minted successfully`);
 
     // Send success response
     res.json({ success: true, message: 'Card minted successfully' });
