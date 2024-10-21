@@ -43,7 +43,7 @@ const initCollection = async () => {
 
       User = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'; // compte[0] de test hardhat
        //creer un instance Collection
-       tx = await mainContract.createCollection(User, CollectionName, CollectionCount);
+       tx = await mainContract.createCollection(User, CollectionName, CollectionCount+50);
        await tx.wait();
 
       // for (let i = 0; i < 5; i++) {
@@ -91,7 +91,7 @@ const insererSetPokman_dans_collection = async(pokmonSetID,userAdresse) => {
         console.log("cards: ", cards, typeof cards);
 
         //creer un instance Collection
-        tx = await mainContract.createCollection(userAdresse, CollectionName, CollectionCount);
+        tx = await mainContract.createCollection(userAdresse, CollectionName, CollectionCount+50);
         await tx.wait();
 
         count = await mainContract.getCollectionCount();
@@ -167,8 +167,64 @@ const add_card_to_UserCollection = async (req, res) => {
 // "id": "swsh3-3"
 // "id": "swsh3-4"
 // "id": "swsh3-5"
-// const
+const add_booster_to_UserCollection = async (req, res) => {
+  try {
+    const { userAdresse, index = 0, booster_count } = req.body;
+    console.log("userAdresse: ", userAdresse, typeof userAdresse);
+    console.log("index: ", index, typeof index);
+    console.log("booster_count: ", booster_count, typeof booster_count);
 
+    // Predefined booster packs
+    const boosterPacks = {
+      1: ["swsh1-1", "swsh1-2", "swsh1-3", "swsh1-4", "swsh1-5"],
+      2: ["swsh2-1", "swsh2-2", "swsh2-3", "swsh2-4", "swsh2-5"],
+      3: ["swsh3-1", "swsh3-2", "swsh3-3", "swsh3-4", "swsh3-5"],
+      4: ["swsh4-1", "swsh4-2", "swsh4-3", "swsh4-4", "swsh4-5"],
+      5: ["swsh5-1", "swsh5-2", "swsh5-3", "swsh5-4", "swsh5-5"]
+    };
+
+    // Check if the booster_count is valid
+    if (!boosterPacks[booster_count]) {
+      return res.status(400).json({ success: false, message: 'Invalid booster count' });
+    }
+
+    // Select the appropriate booster pack
+    const selectedBoosterPack = boosterPacks[booster_count];
+
+    // Fetch collection IDs
+    const collectionIdsRes = await axios.get(`${API_BASE_URL}/getCollectionID/${userAdresse}`);
+    if (!collectionIdsRes.data || !collectionIdsRes.data.collectionIDs) {
+      return res.status(404).json({ success: false, message: 'No collections found for this user' });
+    }
+    const index_bignumber = BigInt(index);
+    const collectionId = collectionIdsRes.data.collectionIDs[index];
+    console.log("collectionId: ", collectionId, typeof collectionId);
+
+    // Process each card in the selected booster pack
+    for (const cardID of selectedBoosterPack) {
+      try {
+        // Fetch card details
+        const cardRes = await axios.get(`https://api.pokemontcg.io/v2/cards/${cardID}`);
+        const cardImg = cardRes.data.data.images.small;
+        console.log("cardImg: ", cardImg, typeof cardImg);
+
+        // Mint the card
+        const tx = await mainContract.mintCard(collectionId, userAdresse, cardID, cardImg);
+        await tx.wait();
+        console.log(`Card ${cardID} minted successfully`);
+      } catch (error) {
+        console.error(`Error processing card ${cardID}:`, error);
+        // Continue with the next card instead of stopping the entire process
+      }
+    }
+
+    // Send success response
+    res.json({ success: true, message: `Booster pack ${booster_count} added successfully` });
+  } catch (error) {
+    console.error('Error in add_booster_to_UserCollection:', error);
+    res.status(500).json({ success: false, message: 'Error adding booster pack', error: error.message });
+  }
+};
 
 
 
