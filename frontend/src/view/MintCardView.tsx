@@ -24,17 +24,38 @@ export const MintCardView = () => {
     setStatus('Processing...');
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/addCardToCollection`, {
-        userAdresse: userAddress,
-        cardID: cardID,
-        index: parseInt(collectionIndex)
-      });
+      //////////////////////////////////////////////////////////////////
+      //------------------------moyen originale: par api--------------//
+      //////////////////////////////////////////////////////////////////
 
-      if (response.data.success) {
-        setStatus('Card minted successfully!');
-      } else {
-        throw new Error(response.data.message || 'Minting failed');
-      }
+      // const response = await axios.post(`${API_BASE_URL}/addCardToCollection`, {
+      //   userAdresse: userAddress,
+      //   cardID: cardID,
+      //   index: parseInt(collectionIndex)
+      // });
+      //
+      // if (response.data.success) {
+      //   setStatus('Card minted successfully!');
+      // } else {
+      //   throw new Error(response.data.message || 'Minting failed');
+      // }
+
+      //////////////////////////////////////////////////////////////////
+      //------------------------moyen par contrat---------------------//
+      //////////////////////////////////////////////////////////////////
+
+      // @ts-ignore
+      const CollectionIds = await wallet.contract.getCollectionsID(userAddress);
+      await CollectionIds;
+      //au cas ou l'utilisateur a plusieur collections, on va mint la carte dans la premiere collection
+      console.log('id:', CollectionIds[0]);
+      //recuperer l'image de card correspondant
+      const cardImg = await axios.get(`https://api.pokemontcg.io/v2/cards/${cardID}`);
+      const image_lien = cardImg.data.data.images.small;
+      console.log('image:', image_lien);
+      const tx = await wallet?.contract?.mintCard(CollectionIds[0],userAddress, cardID, image_lien);
+      await tx.wait();
+      setStatus('Card minted successfully!');
     } catch (error) {
       console.error('Minting failed:', error);
       setStatus('Minting failed. Please check your input information.');

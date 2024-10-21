@@ -73,6 +73,17 @@ const initCollection = async () => {
     }
 }
 
+const creation_vide_collection = async(userAdresse) => {
+    try {
+        //creer un instance Collection
+        tx = await mainContract.createCollection(userAdresse, "CollectionVide", 100);
+        await tx.wait();
+    }
+    catch(error){
+        console.error('Error creation_vide_collection:', error);
+    }
+}
+
 //creation du collection et inserer les pokmanSet dans la collection
 const insererSetPokman_dans_collection = async(pokmonSetID,userAdresse) => {
     try {
@@ -231,5 +242,6 @@ const add_booster_to_UserCollection = async (req, res) => {
 module.exports = {
     initCollection,
     insererSetPokman_dans_collection,
-    add_card_to_UserCollection
+    add_card_to_UserCollection,
+    creation_vide_collection
 }
