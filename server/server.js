@@ -1,4 +1,4 @@
-const { getTest,createCollection,mintCard,getCollection,getCollectionCount,getCollectionName,getAllCollectionCards,getCardInfo,getCollectionOwner,getUserCollection,getCollectionID } = require('./api_contract/api_contract');
+const { getTest,createCollection,mintCard,getCollection,getCollectionCount,getCollectionName,getAllCollectionCards,getCardInfo,getCollectionOwner,getUserCollection,getCollectionID,redeemBooster,getBoosterCards} = require('./api_contract/api_contract');
 const {getSetCardCount,getPokemonSetByID,getPokemonSetCards,getPokemonNameByID} = require('./pokemon/PokemonSetApi');
 const {getPokemonCardByID} = require('./pokemon/PokemonCardApi');
 const {initCollection,insererSetPokman_dans_collection,add_card_to_UserCollection,creation_vide_collection} = require('./init_script/api_pokemon_contract_script');
@@ -92,6 +92,12 @@ app.get('/getUserCollection/:userAddress', getUserCollection);
 
 //get Collection ID
 app.get('/getCollectionID/:userAddress', getCollectionID);
+
+//redeem Booster
+app.post('/redeemBooster', redeemBooster);
+
+//get Booster Cards
+app.get('/getBoosterCards/:boosterID', getBoosterCards);
 
 //add a card into collection
 app.post('/addCardToCollection', add_card_to_UserCollection);

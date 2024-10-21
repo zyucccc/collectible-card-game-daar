@@ -19,13 +19,25 @@ export const BoosterView: React.FC = () => {
   const wallet = useWallet();
   const walletDetails = wallet?.details;
 
-  const cardIds = ["swsh3-1", "swsh3-2", "swsh3-3", "swsh3-4", "swsh3-5"];
+  //on considere les boosters comme des cards(NFT) speciales,
+  //on stocke les boosters (tableau) dans le API,on va recuperer les cards correspondant
+  //depuis l'API et les mint ici
+  const booster1 = {id:"booster1",imageUrl:""}
+
+  // const cardIds = ["swsh3-1", "swsh3-2", "swsh3-3", "swsh3-4", "swsh3-5"];
 
   useEffect(() => {
     const fetchCardImages = async () => {
       setIsLoading(true);
       try {
-        const cardPromises = cardIds.map(id =>
+        //recuperer les cards correspondant au booster1 depuis l'API
+        const response = await axios.get(`${API_BASE_URL}/getBoosterCards/${booster1.id}`);
+        if (!response.data.success) {
+          throw new Error(response.data.error || 'Failed to fetch booster cards');
+        }
+        const cardIds = response.data.cards;
+        //recuperer les images des cards depuis l'API de Pokemon TCG
+        const cardPromises = cardIds.map((id: String) =>
           axios.get(`https://api.pokemontcg.io/v2/cards/${id}`)
         );
         const cardResponses = await Promise.all(cardPromises);
@@ -33,6 +45,7 @@ export const BoosterView: React.FC = () => {
           id: response.data.data.id,
           imageUrl: response.data.data.images.small
         }));
+        //stocker les cards dans le state
         setBoosterCards(cardData);
       } catch (err) {
         console.error('Error fetching card images:', err);
@@ -61,11 +74,14 @@ export const BoosterView: React.FC = () => {
       await CollectionIds;
       console.log('Collection ID:', CollectionIds[0]);
 
-      for (const cardId of cardIds) {
-        const cardImg = await axios.get(`https://api.pokemontcg.io/v2/cards/${cardId}`);
-        const image_lien = cardImg.data.data.images.small;
-        console.log('Card ID:', cardId, 'Image:', image_lien);
-        const tx = await wallet?.contract?.mintCard(CollectionIds[0], userAddress, cardId, image_lien);
+      // for (const cardId of cardIds) {
+      for (const card of boosterCards) {
+        // const cardImg = await axios.get(`https://api.pokemontcg.io/v2/cards/${cardId}`);
+        // const image_lien = cardImg.data.data.images.small;
+        // console.log('Card ID:', cardId, 'Image:', image_lien);
+        console.log('Card ID:', card.id, 'Image:', card.imageUrl);
+        // const tx = await wallet?.contract?.mintCard(CollectionIds[0], userAddress, cardId, image_lien);
+        const tx = await wallet?.contract?.mintCard(CollectionIds[0], userAddress, card.id, card.imageUrl);
         await tx.wait();
       }
       setStatus('Booster minted successfully!');
