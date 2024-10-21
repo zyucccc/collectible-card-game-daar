@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import * as ethereum from '../lib/ethereum';
-import * as main from '../lib/main';
+import {useWallet} from '@/hook/hook';
 
 const API_BASE_URL = 'http://localhost:6854';
 
@@ -10,24 +9,15 @@ export const MintCardView = () => {
   const [cardID, setCardID] = useState('');
   const [collectionIndex, setCollectionIndex] = useState('0');
   const [status, setStatus] = useState('');
-  const [contract, setContract] = useState<main.Main | null>(null);
 
+  const wallet = useWallet();
+  const walletDetails = wallet?.details;
+  //use hood useWallet() pour pre-remplir le champ de l'adresse du wallet address dans la formulaire
   useEffect(() => {
-    const initializeEthereum = async () => {
-      const details = await ethereum.connect('metamask');
-      if (details && details.account) {
-        setUserAddress(details.account);
-        const mainContract = await main.init(details);
-        if (mainContract) {
-          setContract(mainContract);
-        } else {
-          setStatus('Failed to initialize contract. Please check your network.');
-        }
-      }
-    };
-
-    initializeEthereum();
-  }, []);
+    if (walletDetails && walletDetails.account) {
+      setUserAddress(walletDetails.account);
+    }
+  }, [walletDetails]);
 
   const handleMint = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
