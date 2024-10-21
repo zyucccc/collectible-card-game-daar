@@ -24,6 +24,8 @@ async function init(){
 
     //inserer un set de pokemon dans une collection
     await insererSetPokman_dans_collection("swsh2", "0x70997970C51812dc3A010C7d01b50e0d17dc79C8");
+    await insererSetPokman_dans_collection("swsh3", "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC");
+    await insererSetPokman_dans_collection("swsh4", "0x90F79bf6EB2c4f870365E785982E1f101E93b906");
   }
   catch(error){
     console.error('Error init:', error);

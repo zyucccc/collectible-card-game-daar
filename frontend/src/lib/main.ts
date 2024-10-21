@@ -14,15 +14,24 @@ export const correctChain = () => {
 //config et connect to smart contract
 export const init = async (details: ethereum.Details) => {
   const { provider, signer } = details
+  console.log('provider:', provider)
+  console.log('signer:', signer)
   const network = await provider.getNetwork()
+  console.log('network:', network)
   if (correctChain() !== network.chainId) {
     console.error('Please switch to HardHat')
     return null
   }
   const { address, abi } = contracts.Main
+  console.log('address:', address)
+  console.log('abi:', abi)
   const contract = new ethers.Contract(address, abi, provider)
+  console.log('contract:', contract)
   //check si le contract est deploye
+  const latestBlock = await provider.getBlockNumber()
+  console.log('latestBlock:', latestBlock)
   const deployed = await contract.deployed()
+  console.log('contrat deployed')
   if (!deployed) return null
   //si signer existe,connecter le contract avec signer
   const contract_ = signer ? contract.connect(signer) : contract

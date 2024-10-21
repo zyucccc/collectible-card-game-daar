@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import * as ethereum from '../lib/ethereum';
+import * as main from '../lib/main';
 
 const API_BASE_URL = 'http://localhost:6854';
 
@@ -8,6 +10,24 @@ export const MintCardView = () => {
   const [cardID, setCardID] = useState('');
   const [collectionIndex, setCollectionIndex] = useState('0');
   const [status, setStatus] = useState('');
+  const [contract, setContract] = useState<main.Main | null>(null);
+
+  useEffect(() => {
+    const initializeEthereum = async () => {
+      const details = await ethereum.connect('metamask');
+      if (details && details.account) {
+        setUserAddress(details.account);
+        const mainContract = await main.init(details);
+        if (mainContract) {
+          setContract(mainContract);
+        } else {
+          setStatus('Failed to initialize contract. Please check your network.');
+        }
+      }
+    };
+
+    initializeEthereum();
+  }, []);
 
   const handleMint = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();

@@ -43,7 +43,7 @@ const initCollection = async () => {
 
       User = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'; // compte[0] de test hardhat
        //creer un instance Collection
-       tx = await mainContract.createCollection(User, CollectionName, CollectionCount+50);
+       tx = await mainContract.createCollection(User, CollectionName, CollectionCount+300);
        await tx.wait();
 
       // for (let i = 0; i < 5; i++) {
@@ -91,7 +91,7 @@ const insererSetPokman_dans_collection = async(pokmonSetID,userAdresse) => {
         console.log("cards: ", cards, typeof cards);
 
         //creer un instance Collection
-        tx = await mainContract.createCollection(userAdresse, CollectionName, CollectionCount+50);
+        tx = await mainContract.createCollection(userAdresse, CollectionName, CollectionCount+300);
         await tx.wait();
 
         count = await mainContract.getCollectionCount();

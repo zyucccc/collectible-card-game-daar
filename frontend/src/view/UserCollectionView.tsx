@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import * as ethereum from '../lib/ethereum';
+import { useWallet } from '@/hook/hook';
 
 const API_BASE_URL = 'http://localhost:6854';
 
@@ -18,39 +19,40 @@ interface CollectionInfo {
   cards: CardMetaData[];
 }
 
-const useWallet = () => {
-  const [details, setDetails] = useState<ethereum.Details | null>(null);
+// const useWallet = () => {
+//   const [details, setDetails] = useState<ethereum.Details | null>(null);
+//
+//   useEffect(() => {
+//     //get the connection info of wallet metamask
+//     const connectWallet = async () => {
+//       const details = await ethereum.connect('metamask');
+//       setDetails(details);
+//     };
+//
+//     connectWallet();
+//     //ajoute un listener pour ecouter le changement de compte
+//     const handleAccountsChanged = (accounts: string[]) => {
+//       if (accounts.length > 0) {
+//         setDetails(prevDetails => ({
+//           ...prevDetails!,
+//           //mise a jour le compte actuellement connecte
+//           account: accounts[0],
+//         }));
+//       } else {
+//         setDetails(null);
+//       }
+//     };
+//
+//     const unsubscribe = ethereum.accountsChanged(handleAccountsChanged);
+//
+//     return () => {
+//       unsubscribe();
+//     };
+//   }, []);
+//
+//   return details;
+// };
 
-  useEffect(() => {
-    //get the connection info of wallet metamask
-    const connectWallet = async () => {
-      const details = await ethereum.connect('metamask');
-      setDetails(details);
-    };
-
-    connectWallet();
-    //ajoute un listener pour ecouter le changement de compte
-    const handleAccountsChanged = (accounts: string[]) => {
-      if (accounts.length > 0) {
-        setDetails(prevDetails => ({
-          ...prevDetails!,
-          //mise a jour le compte actuellement connecte
-          account: accounts[0],
-        }));
-      } else {
-        setDetails(null);
-      }
-    };
-
-    const unsubscribe = ethereum.accountsChanged(handleAccountsChanged);
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-
-  return details;
-};
 //le view de user collection
 export const UserCollectionView: React.FC = () => {
   const [collectionsInfo, setCollectionsInfo] = useState<CollectionInfo[]>([]);
@@ -62,7 +64,10 @@ export const UserCollectionView: React.FC = () => {
   const [isManualInput, setIsManualInput] = useState(false);
   const collectionsPerPage = 1;
 
-  const walletDetails = useWallet();
+  // const walletDetails = useWallet();
+  const wallet = useWallet();
+  const walletDetails = wallet?.details;
+  console.log(walletDetails);
   // quand le connection info de walletDetails change,on va fetch les collections correspondantes automatiquement
   useEffect(() => {
     if (walletDetails && walletDetails.account && !isManualInput) {
@@ -212,7 +217,7 @@ export const UserCollectionView: React.FC = () => {
         <div key={collectionIndex} className="bg-white rounded-lg shadow-lg p-6 mb-8">
           <h2 className="text-2xl font-semibold mb-2">Collection Name: {collectionInfo.name}</h2>
           <p className="text-gray-600 mb-2">Collection ID: {collectionInfo.id}</p>
-          <p className="text-gray-600 mb-4">Total Cards: {collectionInfo.cardCount}</p>
+          <p className="text-gray-600 mb-4">Collection Taille(totale): {collectionInfo.cardCount}</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {collectionInfo.cards.map((card, cardIndex) => (
               <div key={cardIndex} className="bg-gray-100 rounded-lg p-4 text-center">
