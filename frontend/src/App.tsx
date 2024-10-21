@@ -4,6 +4,7 @@ import { AllCollectionsView } from './view/AllCollectionsView';
 import { UserCollectionView } from './view/UserCollectionView';
 import { HomePage } from './view/HomePage';
 import { MintCardView } from './view/MintCardView';
+import  {BoosterView} from '@/view/BoosterView'
 import { useWallet } from '@/hook/hook'
 
 export const App: React.FC = () => {
@@ -31,6 +32,9 @@ export const App: React.FC = () => {
                   <Link to="/mint-card" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-blue-600">
                     Mint Card
                   </Link>
+                  <Link to="/booster" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-blue-600">
+                    Booster
+                  </Link>
                 </div>
               </div>
             </div>
@@ -43,6 +47,7 @@ export const App: React.FC = () => {
             <Route path="/all-collections" element={<AllCollectionsView />} />
             <Route path="/my-collection" element={<UserCollectionView />} />
             <Route path="/mint-card" element={<MintCardView />} />
+            <Route path="/booster" element={<BoosterView />} />
           </Routes>
         </main>
 
