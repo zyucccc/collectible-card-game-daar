@@ -94,7 +94,7 @@ export const AllCollectionsView: React.FC = () => {
           </div>
         </div>
       ))}
-
+      {/*boutons pour naviguer entre les diff pages de collections*/}
       <div className="flex justify-center mt-8">
         {Array.from({ length: pageCount }).map((_, index) => (
           <button
