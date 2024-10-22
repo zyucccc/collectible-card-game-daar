@@ -77,6 +77,7 @@ export const AllCollectionsView: React.FC = () => {
   const currentPageData = collections.slice(offset, offset + collectionsPerPage);
 
   return (
+
     <div className="container mx-auto px-4 py-8 relative">
       <h1 className="text-4xl font-bold text-center mb-8">All Collections</h1>
       {currentPageData.map((collection) => (
@@ -93,6 +94,7 @@ export const AllCollectionsView: React.FC = () => {
           </div>
         </div>
       ))}
+
       <div className="flex justify-center mt-8">
         {Array.from({ length: pageCount }).map((_, index) => (
           <button
@@ -123,6 +125,7 @@ export const AllCollectionsView: React.FC = () => {
         >
           →
         </button>
+
       )}
     </div>
   );
