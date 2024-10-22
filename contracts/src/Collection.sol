@@ -5,7 +5,6 @@ pragma solidity ^0.8;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-//import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 
 contract Collection is ERC721,ERC721Enumerable,Ownable{
@@ -56,14 +55,14 @@ contract Collection is ERC721,ERC721Enumerable,Ownable{
     return allCards;
   }
 
-//  function getCardsByOwner(address owner) public view returns (uint256[] memory) {
-//    uint256 balance = balanceOf(owner);
-//    uint256[] memory result = new uint256[](balance);
-//    for (uint256 i = 0; i < balance; i++) {
-//        result[i] = tokenOfOwnerByIndex(owner, i);
-//    }
-//    return result;
-//  }
+  function getCardsByOwner(address owner) public view returns (uint256[] memory) {
+    uint256 balance = balanceOf(owner);
+    uint256[] memory result = new uint256[](balance);
+    for (uint256 i = 0; i < balance; i++) {
+        result[i] = tokenOfOwnerByIndex(owner, i);
+    }
+    return result;
+  }
 
 //  override some functions
   //mise a jour le owner de card
