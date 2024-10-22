@@ -43,7 +43,7 @@ const initCollection = async () => {
 
       User = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'; // compte[0] de test hardhat
        //creer un instance Collection
-       tx = await mainContract.createCollection(User, CollectionName, CollectionCount);
+       tx = await mainContract.createCollection(User, CollectionName, CollectionCount+300);
        await tx.wait();
 
       // for (let i = 0; i < 5; i++) {
@@ -73,6 +73,17 @@ const initCollection = async () => {
     }
 }
 
+const creation_vide_collection = async(userAdresse) => {
+    try {
+        //creer un instance Collection
+        tx = await mainContract.createCollection(userAdresse, "CollectionVide", 100);
+        await tx.wait();
+    }
+    catch(error){
+        console.error('Error creation_vide_collection:', error);
+    }
+}
+
 //creation du collection et inserer les pokmanSet dans la collection
 const insererSetPokman_dans_collection = async(pokmonSetID,userAdresse) => {
     try {
@@ -91,7 +102,7 @@ const insererSetPokman_dans_collection = async(pokmonSetID,userAdresse) => {
         console.log("cards: ", cards, typeof cards);
 
         //creer un instance Collection
-        tx = await mainContract.createCollection(userAdresse, CollectionName, CollectionCount);
+        tx = await mainContract.createCollection(userAdresse, CollectionName, CollectionCount+300);
         await tx.wait();
 
         count = await mainContract.getCollectionCount();
@@ -161,19 +172,10 @@ const add_card_to_UserCollection = async (req, res) => {
   }
 };
 
-//booster
-// "id": "swsh3-1"
-// "id": "swsh3-2"
-// "id": "swsh3-3"
-// "id": "swsh3-4"
-// "id": "swsh3-5"
-// const
-
-
-
 
 module.exports = {
     initCollection,
     insererSetPokman_dans_collection,
-    add_card_to_UserCollection
+    add_card_to_UserCollection,
+    creation_vide_collection
 }

@@ -36,7 +36,7 @@ contract Main is Ownable {
     count++;
   }
 
-  function mintCard(uint256 collectionID, address recipient, string memory cardNumber, string calldata ImgField) external onlyOwner returns (uint256) {
+  function mintCard(uint256 collectionID, address recipient, string memory cardNumber, string calldata ImgField) external returns (uint256) {
     require(collectionID <= count, "ERROR: Collection does not exist");
     uint256 unique_id = collections[collectionID].mintCard(recipient, collectionID,cardNumber, ImgField);
     //pour tracker les cards minted
