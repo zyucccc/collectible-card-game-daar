@@ -20,8 +20,9 @@ export const AllCollectionsView: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
-  const collectionsPerPage = 1;
+  const collectionsPerPage = 1 ;
 
+  /*fonction pour récupérer les collections*/
   const fetchCollections = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -50,6 +51,7 @@ export const AllCollectionsView: React.FC = () => {
       setIsLoading(false);
     }
   }, []);
+
 
   useEffect(() => {
     fetchCollections();
@@ -124,4 +126,5 @@ export const AllCollectionsView: React.FC = () => {
       )}
     </div>
   );
+
 };
