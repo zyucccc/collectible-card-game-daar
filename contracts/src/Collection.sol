@@ -51,7 +51,7 @@ contract Collection is ERC721,ERC721Enumerable,Ownable{
   function getAllCollectionCards() public view returns (CardMetaData[] memory) {
     CardMetaData[] memory allCards = new CardMetaData[](counter_token_ids);
     for (uint256 i = 0; i < counter_token_ids; i++) {
-        allCards[i] = CollectionCards[i];
+      allCards[i] = CollectionCards[i];
     }
     return allCards;
   }
@@ -66,23 +66,23 @@ contract Collection is ERC721,ERC721Enumerable,Ownable{
 //  }
 
 //  override some functions
-    //mise a jour le owner de card
-    function _update(address to, uint256 tokenId, address auth) internal override(ERC721, ERC721Enumerable) returns (address){
-        return super._update(to, tokenId, auth);
-    }
+  //mise a jour le owner de card
+  function _update(address to, uint256 tokenId, address auth) internal override(ERC721, ERC721Enumerable) returns (address){
+    return super._update(to, tokenId, auth);
+  }
 
-    //ajouter un balance
-    function _increaseBalance(address account, uint128 amount) internal override(ERC721, ERC721Enumerable) {
-        super._increaseBalance(account, amount);
-    }
+  //ajouter un balance
+  function _increaseBalance(address account, uint128 amount) internal override(ERC721, ERC721Enumerable) {
+    super._increaseBalance(account, amount);
+  }
 
-    //check si contrat supporte l'interface
-    function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721Enumerable) returns (bool){
-        return super.supportsInterface(interfaceId);
-    }
+  //check si contrat supporte l'interface
+  function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721Enumerable) returns (bool){
+    return super.supportsInterface(interfaceId);
+  }
 
-    function tokenURI(uint256 tokenId) public view override(ERC721) returns (string memory)
-    {
-        return super.tokenURI(tokenId);
-    }
+  function tokenURI(uint256 tokenId) public view override(ERC721) returns (string memory)
+  {
+    return super.tokenURI(tokenId);
+  }
 }
